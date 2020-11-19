@@ -7,8 +7,8 @@ using Random = UnityEngine.Random;
 
 namespace UnityStandardAssets.Characters.FirstPerson
 {
-    [RequireComponent(typeof (CharacterController))]
-    [RequireComponent(typeof (AudioSource))]
+    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(AudioSource))]
     public class FirstPersonController : MonoBehaviour
     {
         [SerializeField] private bool m_IsWalking;
@@ -46,7 +46,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         #region Crouch Variables
         private float target_height = 1.8f;
         private float previous_y = 0;
-        [SerializeField]private bool is_crouching = false;
+        [SerializeField] private bool is_crouching = false;
         #endregion
 
 
@@ -63,28 +63,28 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private bool m_IsLeaningLeft = false;
         private bool m_IsLeaningRight = false;
         #endregion
-        
+
 
         // Use this for initialization
         private void Start()
         {
             m_CharacterController = GetComponent<CharacterController>();
-            #region LeaningStart
+            #region Leaning
             m_FPSController = GetComponent<FirstPersonController>();
             m_CameraTranform = m_FPSController.transform.GetChild(0);
             m_InitPos = m_CameraTranform.localPosition;
             m_InitRot = m_CameraTranform.localRotation;
             #endregion
-            
+
             m_Camera = Camera.main;
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
             m_FovKick.Setup(m_Camera);
             m_HeadBob.Setup(m_Camera, m_StepInterval);
             m_StepCycle = 0f;
-            m_NextStep = m_StepCycle/2f;
+            m_NextStep = m_StepCycle / 2f;
             m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
-			m_MouseLook.Init(transform , m_Camera.transform);
+            m_MouseLook.Init(transform, m_Camera.transform);
         }
 
 
@@ -98,7 +98,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
             }
 
-            #region Crouch
+            #region Basic Crouch
             CrouchLerp();
             #endregion          
 
@@ -117,20 +117,20 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_PreviouslyGrounded = m_CharacterController.isGrounded;
 
             #region Lean and Crouch
-            CheckCrouchLeanSpeed();           
+            CheckCrouchLeanSpeed();
             CheckCanLeanLeft();
             CheckCanLeanRight();
             CheckLeaning();
             #endregion
-           
+
 
         }
 
         void CheckCanStand()
         {
-            
+
         }
-        #region CheckCanLeaning
+        #region Leaning
         void CheckCanLeanLeft()
         {
             RaycastHit hit;
@@ -185,16 +185,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
             float speed;
             GetInput(out speed);
             // always move along the camera forward as it is the direction that it being aimed at
-            Vector3 desiredMove = transform.forward*m_Input.y + transform.right*m_Input.x;
+            Vector3 desiredMove = transform.forward * m_Input.y + transform.right * m_Input.x;
 
             // get a normal for the surface that is being touched to move along it
             RaycastHit hitInfo;
             Physics.SphereCast(transform.position, m_CharacterController.radius, Vector3.down, out hitInfo,
-                               m_CharacterController.height/2f, ~0, QueryTriggerInteraction.Ignore);
+                               m_CharacterController.height / 2f, ~0, QueryTriggerInteraction.Ignore);
             desiredMove = Vector3.ProjectOnPlane(desiredMove, hitInfo.normal).normalized;
 
-            m_MoveDir.x = desiredMove.x*speed;
-            m_MoveDir.z = desiredMove.z*speed;
+            m_MoveDir.x = desiredMove.x * speed;
+            m_MoveDir.z = desiredMove.z * speed;
 
 
             if (m_CharacterController.isGrounded)
@@ -211,9 +211,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else
             {
-                m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
+                m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.fixedDeltaTime;
             }
-            m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
+            m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.fixedDeltaTime);
 
             ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
@@ -233,7 +233,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             if (m_CharacterController.velocity.sqrMagnitude > 0 && (m_Input.x != 0 || m_Input.y != 0))
             {
-                m_StepCycle += (m_CharacterController.velocity.magnitude + (speed*(m_IsWalking ? 1f : m_RunstepLenghten)))*
+                m_StepCycle += (m_CharacterController.velocity.magnitude + (speed * (m_IsWalking ? 1f : m_RunstepLenghten))) *
                              Time.fixedDeltaTime;
             }
 
@@ -276,7 +276,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_Camera.transform.localPosition =
                     m_HeadBob.DoHeadBob(m_CharacterController.velocity.magnitude +
-                                      (speed*(m_IsWalking ? 1f : m_RunstepLenghten)));
+                                      (speed * (m_IsWalking ? 1f : m_RunstepLenghten)));
                 newCameraPosition = m_Camera.transform.localPosition;
                 newCameraPosition.y = m_Camera.transform.localPosition.y - m_JumpBob.Offset();
             }
@@ -324,7 +324,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void RotateView()
         {
-            m_MouseLook.LookRotation (transform, m_Camera.transform);
+            m_MouseLook.LookRotation(transform, m_Camera.transform);
         }
 
 
@@ -341,7 +341,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 return;
             }
-            body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
+            body.AddForceAtPosition(m_CharacterController.velocity * 0.1f, hit.point, ForceMode.Impulse);
         }
 
         public void SetRotateZ(float value)
@@ -355,6 +355,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_CharacterController.height = Mathf.Lerp(m_CharacterController.height, target_height, 5f * Time.deltaTime);
             m_Camera.transform.position = Vector3.Lerp(m_Camera.transform.position, new Vector3(m_Camera.transform.position.x, m_CharacterController.transform.position.y + target_height / 2 - 0.1f, m_Camera.transform.position.z), 5f * Time.deltaTime);
             m_CharacterController.transform.position = Vector3.Lerp(m_CharacterController.transform.position, new Vector3(m_CharacterController.transform.position.x, previous_y + target_height / 2 + m_CharacterController.skinWidth, m_CharacterController.transform.position.z), 5f * Time.deltaTime);
+        }
+
+        public bool UpIsClear()
+        {
+            return (!Physics.Raycast(transform.position, Vector3.up, 1));
         }
         public void CheckCrouchLeanSpeed()
         {
@@ -383,8 +388,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else
             {
-                target_height = 1.8f;
-                is_crouching = false;
+                if (UpIsClear()) // Mert eğilme. Ayağı kalkma efektlerini yapan yeri bu if'in içine aldım
+                {
+                    target_height = 1.8f;
+                    is_crouching = false;
+                }
                 if (Input.GetKey(leanRightKey))
                 {
                     m_IsLeaningRight = true;
@@ -401,9 +409,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 {
                     m_IsLeaningLeft = false;
                     m_IsLeaningRight = false;
-                    m_RunSpeed = 6f;
-                    m_WalkSpeed = 3f;
+                    if (UpIsClear()) // Mert eğilme2 . Ayağı kalkma efektlerini yapan yeri bu if'in içine aldım
+                    {
+                        m_RunSpeed = 6f;
+                        m_WalkSpeed = 3f;
+                    }
+                     
                 }
+
             }
         }
     }
