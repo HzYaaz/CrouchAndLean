@@ -388,7 +388,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else
             {
-                if (UpIsClear()) // Mert eğilme. Ayağı kalkma efektlerini yapan yeri bu if'in içine aldım
+                if (UpIsClear()) 
                 {
                     target_height = 1.8f;
                     is_crouching = false;
@@ -409,7 +409,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 {
                     m_IsLeaningLeft = false;
                     m_IsLeaningRight = false;
-                    if (UpIsClear()) // Mert eğilme2 . Ayağı kalkma efektlerini yapan yeri bu if'in içine aldım
+                    if (UpIsClear()) 
                     {
                         m_RunSpeed = 6f;
                         m_WalkSpeed = 3f;
